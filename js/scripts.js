@@ -11,6 +11,9 @@ $( document ).ready( function () {
   hideOtherTitle();
   hideColorSelect();
 
+  // Create arrays of options
+  createJSOptionsArrays();
+
   // Initialize event listeners
   showOrHideOtherTitle();
   showShirtColorOptions();
@@ -58,12 +61,30 @@ const showOrHideOtherTitle = () => {
 // --------------------------------------------
 // Global Variables
 const $colorOptions = $('#color').find('option');
-
+const jsPunsOptions = [];
+const heartJSOptions = [];
 
 // Function to hide #color select area
 const hideColorSelect = () => {
   $('#colors-js-puns').hide();
 };
+
+// Function to create array of specific options
+const createJSOptionsArrays = () => {
+  // Loop through color options
+  $colorOptions.each((i) =>{
+    // If option is JS Puns...
+    if ($colorOptions.eq(i).text().includes('JS Puns')) {
+      jsPunsOptions.push($colorOptions.eq(i));
+    }
+
+    // If option is heart JS...
+    else if ($colorOptions.eq(i).text().includes('♥ JS') || $colorOptions.eq(i).text().includes('&#9829; JS') ) {
+      heartJSOptions.push($colorOptions.eq(i));
+    }
+
+  }); // end of $.each loop
+}; // end of createJSOptionsArrays()
 
 // Function to show or hide #color <select>
 
@@ -72,67 +93,106 @@ const hideColorSelect = () => {
 const showShirtColorOptions = () => {
   // When user selects a theme option...
   $('#design').on('change', (e) => {
-    // Initialize array for storing matched options
-    const matchedOptions = [];
-    // Remove "selected" attribute from all color options
-    $colorOptions.removeProp('selected');
 
     // If "JS Puns" <option> was selected...
     if (e.target.value === 'js puns') {
+      // Show color selection
       $('#colors-js-puns').show();
 
-      // Loop through color options
-      $colorOptions.each((i) => {
-        // If option text contains "js puns"...
-        if ($colorOptions.eq(i).text().includes('JS Puns')) {
-          $colorOptions.eq(i).show();
-          $colorOptions.eq(i).removeAttr('disabled');
-          matchedOptions.push($colorOptions.eq(i));
-        }
-        else {
-          $colorOptions.eq(i).hide();
-          $colorOptions.eq(i).attr('disabled', 'true');
-          // Note: Had to also disable <option> since display:none does not work on form elements in Safari or IE.
-        }
-      }); // end of $.each loop
+      // Remove all options from <select>
+      $('select#color').empty();
+
+      // Add jsPuns options to <select>
+      $('select#color').append(jsPunsOptions);
 
     } // end of if 'js puns'
 
     // If "Heart JS" <option> was selected...
     else if (e.target.value === 'heart js') {
+      // Show color selection
       $('#colors-js-puns').show();
-      // const $colorOptions = $('#color').find('option');
-      // Loop through color options
-      $colorOptions.each((i) => {
-        // If option text contains "heart js"...
-        if ($colorOptions.eq(i).text().includes('♥ JS') || $colorOptions.eq(i).text().includes('&#9829; JS') ) {
-          $colorOptions.eq(i).show();
-          $colorOptions.eq(i).removeAttr('disabled');
-          matchedOptions.push($colorOptions.eq(i));
-        }
-        else {
-          $colorOptions.eq(i).hide();
-          $colorOptions.eq(i).attr('disabled', 'true');
-        }
-      }); // end of $.each loop
+
+      // Remove all options from <select>
+      $('select#color').empty();
+
+      // Add heartJS options to <select>
+      $('select#color').append(heartJSOptions);
 
     } // end of else if 'heart js'
 
     else {
-      // Show all color options
-      $colorOptions.show();
-      $colorOptions.removeAttr('disabled');
-      // matchedOptions.push($colorOptions);
-      $('#colors-js-puns').hide();
+      hideColorSelect();
+      $('select#color').empty();
     } // end of else statement
-
-    // Select the first among matchedOptions
-    // console.log($(matchedOptions).eq(0));
-    $(matchedOptions).eq(0).prop('selected', 'selected');
-    // matchedOptions[0].selected = true;
 
   }); // End of change handler
 }; // End of showShirtColorOptions()
+
+
+// const showShirtColorOptions = () => {
+//   // When user selects a theme option...
+//   $('#design').on('change', (e) => {
+//     // Initialize array for storing matched options
+//     const matchedOptions = [];
+//     // Remove "selected" attribute from all color options
+//     $colorOptions.removeProp('selected');
+//
+//     // If "JS Puns" <option> was selected...
+//     if (e.target.value === 'js puns') {
+//       $('#colors-js-puns').show();
+//
+//       // Loop through color options
+//       $colorOptions.each((i) => {
+//         // If option text contains "js puns"...
+//         if ($colorOptions.eq(i).text().includes('JS Puns')) {
+//           $colorOptions.eq(i).show();
+//           $colorOptions.eq(i).removeAttr('disabled');
+//           matchedOptions.push($colorOptions.eq(i));
+//         }
+//         else {
+//           $colorOptions.eq(i).hide();
+//           $colorOptions.eq(i).attr('disabled', 'true');
+//           // Note: Had to also disable <option> since display:none does not work on form elements in Safari or IE.
+//         }
+//       }); // end of $.each loop
+//
+//     } // end of if 'js puns'
+//
+//     // If "Heart JS" <option> was selected...
+//     else if (e.target.value === 'heart js') {
+//       $('#colors-js-puns').show();
+//       // const $colorOptions = $('#color').find('option');
+//       // Loop through color options
+//       $colorOptions.each((i) => {
+//         // If option text contains "heart js"...
+//         if ($colorOptions.eq(i).text().includes('♥ JS') || $colorOptions.eq(i).text().includes('&#9829; JS') ) {
+//           $colorOptions.eq(i).show();
+//           $colorOptions.eq(i).removeAttr('disabled');
+//           matchedOptions.push($colorOptions.eq(i));
+//         }
+//         else {
+//           $colorOptions.eq(i).hide();
+//           $colorOptions.eq(i).attr('disabled', 'true');
+//         }
+//       }); // end of $.each loop
+//
+//     } // end of else if 'heart js'
+//
+//     else {
+//       // Show all color options
+//       $colorOptions.show();
+//       $colorOptions.removeAttr('disabled');
+//       // matchedOptions.push($colorOptions);
+//       $('#colors-js-puns').hide();
+//     } // end of else statement
+//
+//     // Select the first among matchedOptions
+//     // console.log($(matchedOptions).eq(0));
+//     $(matchedOptions).eq(0).prop('selected', 'selected');
+//     // matchedOptions[0].selected = true;
+//
+//   }); // End of change handler
+// }; // End of showShirtColorOptions()
 
 
 // --------------------------------------------
