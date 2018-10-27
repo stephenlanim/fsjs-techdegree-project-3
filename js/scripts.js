@@ -7,8 +7,9 @@ $( document ).ready( function () {
   // Set initial focus to first textfield
   focusOnFirstInput();
 
-  // Initially hide other-title
+  // Initially hide other-title and color select
   hideOtherTitle();
+  hideColorSelect();
 
   // Initialize event listeners
   showOrHideOtherTitle();
@@ -22,7 +23,6 @@ $( document ).ready( function () {
 
 // Global Variables
 const $textFields = $('input[type="text"]');
-
 
 // Function to set cursor focus to first textfield
 const focusOnFirstInput = () => {
@@ -56,23 +56,43 @@ const showOrHideOtherTitle = () => {
 // --------------------------------------------
 //   T-Shirt Info Section
 // --------------------------------------------
+// Global Variables
+const $colorOptions = $('#color').find('option');
+
+
+// Function to hide #color select area
+const hideColorSelect = () => {
+  $('#colors-js-puns').hide();
+};
+
+// Function to show or hide #color <select>
+
 
 // Function to show appropriate set of colors when user chooses shirt design
 const showShirtColorOptions = () => {
   // When user selects a theme option...
   $('#design').on('change', (e) => {
-    const $colorOptions = $('#color').find('option');
+    // Initialize array for storing matched options
+    const matchedOptions = [];
+    // Remove "selected" attribute from all color options
+    $colorOptions.removeProp('selected');
+
     // If "JS Puns" <option> was selected...
     if (e.target.value === 'js puns') {
-      // const $colorOptions = $('#color').find('option');
+      $('#colors-js-puns').show();
+
       // Loop through color options
       $colorOptions.each((i) => {
         // If option text contains "js puns"...
         if ($colorOptions.eq(i).text().includes('JS Puns')) {
           $colorOptions.eq(i).show();
+          $colorOptions.eq(i).removeAttr('disabled');
+          matchedOptions.push($colorOptions.eq(i));
         }
         else {
           $colorOptions.eq(i).hide();
+          $colorOptions.eq(i).attr('disabled', 'true');
+          // Note: Had to also disable <option> since display:none does not work on form elements in Safari or IE.
         }
       }); // end of $.each loop
 
@@ -80,15 +100,19 @@ const showShirtColorOptions = () => {
 
     // If "Heart JS" <option> was selected...
     else if (e.target.value === 'heart js') {
+      $('#colors-js-puns').show();
       // const $colorOptions = $('#color').find('option');
       // Loop through color options
       $colorOptions.each((i) => {
         // If option text contains "heart js"...
         if ($colorOptions.eq(i).text().includes('♥ JS') || $colorOptions.eq(i).text().includes('&#9829; JS') ) {
           $colorOptions.eq(i).show();
+          $colorOptions.eq(i).removeAttr('disabled');
+          matchedOptions.push($colorOptions.eq(i));
         }
         else {
           $colorOptions.eq(i).hide();
+          $colorOptions.eq(i).attr('disabled', 'true');
         }
       }); // end of $.each loop
 
@@ -97,55 +121,18 @@ const showShirtColorOptions = () => {
     else {
       // Show all color options
       $colorOptions.show();
+      $colorOptions.removeAttr('disabled');
+      // matchedOptions.push($colorOptions);
+      $('#colors-js-puns').hide();
     } // end of else statement
 
-        // If option value matches one of the appropriate colors...
-        // if ($colorOptions.eq(i).val() === 'cornflowerblue' || $colorOptions.eq(i).val() === 'darkslategrey' || $colorOptions.eq(i).val() === 'gold') {
-        //   // Show that option
-        //   $colorOptions.eq(i).show();
-        // }
-        // else {
-        //   $colorOptions.eq(i).hide();
-        // }
+    // Select the first among matchedOptions
+    // console.log($(matchedOptions).eq(0));
+    $(matchedOptions).eq(0).prop('selected', 'selected');
+    // matchedOptions[0].selected = true;
 
-        // $('#color').find('option').val('cornflowerblue').show();
-        // $('#color').find('option').val('darkslategrey').show();
-        // $('#color').find('option').val('gold').show();
-
-      // If option value matches one of the appropriate colors...
-      // Show that option
-      // $('#color').find('option').val('cornflowerblue').show();
-      // $('#color').find('option').val('darkslategrey').show();
-      // $('#color').find('option').val('gold').show();
-      //
-      // // Hide other colors
-      // $('#color').find('option').val('tomato').hide();
-      // $('#color').find('option').val('steelblue').hide();
-      // $('#color').find('option').val('dimgrey').hide();
-
-
-    // // else if "I heart JS" <option> was selected...
-    // else if (e.target.value === 'heart js') {
-    //   // Show matching colors
-    //   $('#color').find('option').val('tomato').show();
-    //   $('#color').find('option').val('steelblue').show();
-    //   $('#color').find('option').val('dimgrey').show();
-    //   // Hide other colors
-    //   $('#color').find('option').val('cornflowerblue').hide();
-    //   $('#color').find('option').val('darkslategrey').hide();
-    //   $('#color').find('option').val('gold').hide();
-    // }
-    // else {
-    //   // Show all colors
-    //   $('#color').find('option').val('cornflowerblue').show();
-    //   $('#color').find('option').val('darkslategrey').show();
-    //   $('#color').find('option').val('gold').show();
-    //   $('#color').find('option').val('tomato').show();
-    //   $('#color').find('option').val('steelblue').show();
-    //   $('#color').find('option').val('dimgrey').show();
-    // }
-  });
-};
+  }); // End of change handler
+}; // End of showShirtColorOptions()
 
 
 // --------------------------------------------
