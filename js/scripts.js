@@ -7,6 +7,10 @@ $( document ).ready( function () {
   // Set initial focus to first textfield
   focusOnFirstInput();
 
+  // Set initial payment method to credit card
+  selectCCOption();
+  disableCCPromptOption();
+
   // Initially hide other-title and color select
   hideOtherTitle();
   hideColorSelect();
@@ -17,6 +21,7 @@ $( document ).ready( function () {
   // Initialize event listeners
   showOrHideOtherTitle();
   showShirtColorOptions();
+  showPaymentInfo();
 
 });
 
@@ -128,73 +133,6 @@ const showShirtColorOptions = () => {
   }); // End of change handler
 }; // End of showShirtColorOptions()
 
-
-// const showShirtColorOptions = () => {
-//   // When user selects a theme option...
-//   $('#design').on('change', (e) => {
-//     // Initialize array for storing matched options
-//     const matchedOptions = [];
-//     // Remove "selected" attribute from all color options
-//     $colorOptions.removeProp('selected');
-//
-//     // If "JS Puns" <option> was selected...
-//     if (e.target.value === 'js puns') {
-//       $('#colors-js-puns').show();
-//
-//       // Loop through color options
-//       $colorOptions.each((i) => {
-//         // If option text contains "js puns"...
-//         if ($colorOptions.eq(i).text().includes('JS Puns')) {
-//           $colorOptions.eq(i).show();
-//           $colorOptions.eq(i).removeAttr('disabled');
-//           matchedOptions.push($colorOptions.eq(i));
-//         }
-//         else {
-//           $colorOptions.eq(i).hide();
-//           $colorOptions.eq(i).attr('disabled', 'true');
-//           // Note: Had to also disable <option> since display:none does not work on form elements in Safari or IE.
-//         }
-//       }); // end of $.each loop
-//
-//     } // end of if 'js puns'
-//
-//     // If "Heart JS" <option> was selected...
-//     else if (e.target.value === 'heart js') {
-//       $('#colors-js-puns').show();
-//       // const $colorOptions = $('#color').find('option');
-//       // Loop through color options
-//       $colorOptions.each((i) => {
-//         // If option text contains "heart js"...
-//         if ($colorOptions.eq(i).text().includes('♥ JS') || $colorOptions.eq(i).text().includes('&#9829; JS') ) {
-//           $colorOptions.eq(i).show();
-//           $colorOptions.eq(i).removeAttr('disabled');
-//           matchedOptions.push($colorOptions.eq(i));
-//         }
-//         else {
-//           $colorOptions.eq(i).hide();
-//           $colorOptions.eq(i).attr('disabled', 'true');
-//         }
-//       }); // end of $.each loop
-//
-//     } // end of else if 'heart js'
-//
-//     else {
-//       // Show all color options
-//       $colorOptions.show();
-//       $colorOptions.removeAttr('disabled');
-//       // matchedOptions.push($colorOptions);
-//       $('#colors-js-puns').hide();
-//     } // end of else statement
-//
-//     // Select the first among matchedOptions
-//     // console.log($(matchedOptions).eq(0));
-//     $(matchedOptions).eq(0).prop('selected', 'selected');
-//     // matchedOptions[0].selected = true;
-//
-//   }); // End of change handler
-// }; // End of showShirtColorOptions()
-
-
 // --------------------------------------------
 //   Register for Activities Section
 // --------------------------------------------
@@ -278,7 +216,55 @@ $actvtyChkbxs.on('click', (e) => {
 // --------------------------------------------
 //   Payment Info Section
 // --------------------------------------------
+// Global variables
+const $paymentSections = $('#paymentInfo > div');
+const $paymentOptions = $('#payment > option');
 
+// Function to disable "Select Payment Method" prompt option
+const disableCCPromptOption = () => {
+  $('[value="select_method"]').prop('disabled', 'disabled');
+};
+
+// Function to select credit-card option
+const selectCCOption = () => {
+  $('[value="credit card"]').prop('selected', 'selected');
+  $paymentSections.hide();
+  $paymentSections.eq(0).show();
+};
+
+
+// Function to show appropriate inputs or info when a given option is selected and hide others.
+const showPaymentInfo = () => {
+
+  // When user selects a payment method...
+  $('#payment').on('change', (e) => {
+
+    // Get option that was just selected
+    // let selectedOption;
+    let selectPymntIndex;
+    // Loop through options
+    $paymentOptions.each((i) => {
+      // If this option is selected...
+      if ($paymentOptions.eq(i).prop('selected')) {
+
+        // selectedOption = $paymentOptions.eq(i);
+        selectPymntIndex = i;
+      }
+    }); // end of selected payment method scripts
+
+    // If selected option is "Select Payment Method"...
+    if (selectPymntIndex === 0) {
+      $paymentSections.hide();
+    }
+    else {
+      $paymentSections.hide();
+      // Show payment section that matches payment method
+      $paymentSections.eq(selectPymntIndex - 1).show();
+    }
+
+  }); // end of change handler
+
+}; // end of showPaymentInfo
 
 
 // --------------------------------------------
