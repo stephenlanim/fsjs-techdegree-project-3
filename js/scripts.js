@@ -199,38 +199,60 @@ const showShirtColorOptions = () => {
 //   Register for Activities Section
 // --------------------------------------------
 // Global Variables
-const activitiesTotal = 0;
-const displayTotal = $('<div></div>').text(`Total = ${activitiesTotal}`);
+let activitiesTotal = 0;
+const $totalDiv = $('<div></div>')
+  .append($('<span></span>').attr('id', 'displayTotal'));
 const $actvtyChkbxs = $('.activities input');
+
+// Display total below activities
+$('.activities').append($totalDiv);
+
+const $displayTotal = $('#displayTotal');
 
 // When user checks activity...
 $actvtyChkbxs.on('click', (e) => {
-  let $checkedActivity = $(".activities :checked");
   const $clkdLblIndx = $actvtyChkbxs.index(e.target);
   const clkdLabelTxt = e.target.parentNode.textContent;
   const $clkdChkbx = $(e.target);
+  const $price = parseInt(clkdLabelTxt.substring((clkdLabelTxt.length - 3), clkdLabelTxt.length));
 
+  console.log($price);
 
-    // Loop through each checkbox label
-    $('.activities label').each((i) => {
-      const $currentLabel = $('.activities label').eq(i);
-      const $currentCheckbox = $currentLabel.find('input');
+    // If checkbox is being checked...
+    if ($clkdChkbx.prop('checked') === true) {
 
-      // Test conditions
-      const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
+      // Loop through each checkbox label
+      $('.activities label').each((i) => {
+        const $currentLabel = $('.activities label').eq(i);
+        const $currentCheckbox = $currentLabel.find('input');
 
-      // If checkbox is being checked...
-      if ($clkdChkbx.prop('checked') === true) {
+        // Test conditions
+        const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
+
         // If there is another activity at the same day and time...
         if (i !== $clkdLblIndx && _concurrentActivities) {
 
           // Disable conflicting activity
           $currentCheckbox.attr('disabled', 'true');
         }
-      } // end of if being checked
 
-      // If checkbox is being unchecked...
-      if ($clkdChkbx.prop('checked') === false) {
+      }); // end of $.each loop
+
+      // Add price of clicked activity to total
+      activitiesTotal += $price;
+
+    } // end of if being checked
+
+    // If checkbox is being unchecked...
+    if ($clkdChkbx.prop('checked') === false) {
+
+      // Loop through each checkbox label
+      $('.activities label').each((i) => {
+        const $currentLabel = $('.activities label').eq(i);
+        const $currentCheckbox = $currentLabel.find('input');
+
+        // Test conditions
+        const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
 
         // If there is another activity at the same day and time...
         if (i !== $clkdLblIndx && _concurrentActivities) {
@@ -238,15 +260,16 @@ $actvtyChkbxs.on('click', (e) => {
           // Reenable conflicting activity
           $currentCheckbox.removeAttr('disabled');
         }
-      } // end of if being unchecked
 
-    }); // end of $.each loop
+      }); // end of $.each loop
 
-    // Total equals sum of all checked activity prices
+      // Subtract price of clicked activity from total
+      activitiesTotal -= $price;
+
+    } // end of if being unchecked
 
     // Display total below activities
-    $('.activities').append(displayTotal);
-
+    $displayTotal.text(`Total = $${activitiesTotal}`);
 
 }); // end of click handler
 
