@@ -22,6 +22,7 @@ $( document ).ready( function () {
   showOrHideOtherTitle();
   showShirtColorOptions();
   showPaymentInfo();
+  validateForm();
 
 });
 
@@ -154,8 +155,6 @@ $actvtyChkbxs.on('click', (e) => {
   const $clkdChkbx = $(e.target);
   const $price = parseInt(clkdLabelTxt.substring((clkdLabelTxt.length - 3), clkdLabelTxt.length));
 
-  console.log($price);
-
     // If checkbox is being checked...
     if ($clkdChkbx.prop('checked') === true) {
 
@@ -270,3 +269,99 @@ const showPaymentInfo = () => {
 // --------------------------------------------
 //   Form Validation
 // --------------------------------------------
+// Global Variables
+const $userName = $('#name');
+const $userEmail = $('#mail');
+const $ccNum = $('#cc-num');
+const $ccZip = $('#zip');
+const $ccCVV = $('#cvv');
+
+// Function to create an alert message
+
+
+/* --- Validate Name --- */
+const isValidName = (name) => {
+  return /[\w]+/.test(name);
+};
+
+// Invalid name alert message
+const nameAlert = () => {console.log("Name invalid.")};
+
+/* --- Validate Email --- */
+const isValidEmail = (email) => {
+  return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+}
+
+// Invalid email alert message
+const emailAlert = () => {console.log("Email invalid.")};
+
+/* --- Validate Activities --- */
+
+// Invalid activities alert message
+const activitiesAlert = () => {console.log("No checked activities.")};
+
+const validateActivities = () => {
+
+  let checkedActsQty = 0;
+  // Loop through activity checkbox
+  $actvtyChkbxs.each((i) => {
+    // If this checbox is checked...
+    if ($actvtyChkbxs.eq(i).prop('checked')) {
+
+      checkedActsQty++;
+    }
+  }); // end of selected payment method scripts
+
+  // If no activities are selected...
+  if (checkedActsQty === 0) {
+    // Show relevant alert message
+    activitiesAlert();
+  }
+}; // end of validateActivities()
+
+/* --- Validate Payment Method --- */
+
+// Invalid ccNum alert message
+const ccNumAlert = () => {console.log("ccNum invalid.")};
+
+const isValidCCNum = (ccNum) => {
+  return /\d{13,16}/.test(parseInt(ccNum));
+};
+
+// Invalid zip alert message
+const zipAlert = () => {console.log("Zip invalid.")};
+
+const isValidZip = (zip) => {
+  return /\d{5}/.test(parseInt(zip));
+};
+
+// Invalid cvv alert message
+const cvvAlert = () => {console.log("CVV invalid.")};
+
+const isValidCVV = (cvv) => {
+  return /\d{3}/.test(parseInt(cvv));
+};
+
+
+// Function to check validity of information upon form submission
+const validateForm = () => {
+  $('form').on('submit', (e) => {
+    e.preventDefault();
+
+    // validateName()
+
+    // validateEmail()
+
+    validateActivities();
+
+    // validateCCNum()
+
+    // validateZip()
+
+    // validateCVV()
+
+
+
+
+  }); // end of submit handler
+}; // end of validateForm()
