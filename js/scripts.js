@@ -48,9 +48,6 @@ $( document ).ready( function () {
 //   Form Scripts
 // ============================================
 
-// Global Variables
-const $textFields = $('input[type="text"]');
-
 // Function to set cursor focus to first textfield
 const focusOnFirstInput = () => {
   $('input[type="text"]').eq(0).focus();
@@ -384,7 +381,7 @@ const invalidEmailMessage = `Must be a valid email. Example: person.mcperson@exa
 
 const isValidEmail = (email) => {
   return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
-}
+};
 
 /* --- Validate Activities --- */
 const noActivitiesMessage = `You must register for at least 1 activity before submitting.`;
