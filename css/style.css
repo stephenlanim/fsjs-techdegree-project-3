@@ -113,7 +113,7 @@ button:hover {
 	background: #184c62;
 }
 
-.alert {
+.tooltip {
   background-color: #C37D92;
   /* background-color: #FE938C; */
   border-radius: 5px;
@@ -122,12 +122,14 @@ button:hover {
   position: absolute;
   left: 105%;
   top: 25px;
-  width: 160px;
+  width: 200px;
   padding: 7px 10px;
   text-align: center;
+  word-wrap: break-word;
+  /* z-index: 10; */
 }
 
-.alert:after {
+.tooltip:after {
   border: solid transparent;
   border-color: rgba(136, 183, 213, 0);
   border-right-color: #C37D92;

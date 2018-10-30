@@ -21,7 +21,20 @@ $( document ).ready( function () {
   // Initialize event listeners
   showOrHideOtherTitle();
   showShirtColorOptions();
+  manageActivities();
   showPaymentInfo();
+  validateOnInput(
+    $userName,
+    isValidName,
+    noNameMessage,
+    invalidNameMessage
+  );
+  validateOnInput(
+    $userEmail,
+    isValidEmail,
+    noEmailMessage,
+    invalidEmailMessage
+  );
   validateForm();
 
 });
@@ -37,8 +50,6 @@ const $textFields = $('input[type="text"]');
 const focusOnFirstInput = () => {
   $('input[type="text"]').eq(0).focus();
 };
-
-// Regular expression for capturing email address: [\w.]*@[\w]*\.\w*
 
 // --------------------------------------------
 //   Job Role Section
@@ -148,68 +159,70 @@ $('.activities').append($totalDiv);
 
 const $displayTotal = $('#displayTotal');
 
-// When user checks activity...
-$actvtyChkbxs.on('click', (e) => {
-  const $clkdLblIndx = $actvtyChkbxs.index(e.target);
-  const clkdLabelTxt = e.target.parentNode.textContent;
-  const $clkdChkbx = $(e.target);
-  const $price = parseInt(clkdLabelTxt.substring((clkdLabelTxt.length - 3), clkdLabelTxt.length));
+// Function to manage the results of selecting activities
+const manageActivities = () => {
+  // When user checks activity...
+  $actvtyChkbxs.on('click', (e) => {
+    const $clkdLblIndx = $actvtyChkbxs.index(e.target);
+    const clkdLabelTxt = e.target.parentNode.textContent;
+    const $clkdChkbx = $(e.target);
+    const $price = parseInt(clkdLabelTxt.substring((clkdLabelTxt.length - 3), clkdLabelTxt.length));
 
-    // If checkbox is being checked...
-    if ($clkdChkbx.prop('checked') === true) {
+      // If checkbox is being checked...
+      if ($clkdChkbx.prop('checked') === true) {
 
-      // Loop through each checkbox label
-      $('.activities label').each((i) => {
-        const $currentLabel = $('.activities label').eq(i);
-        const $currentCheckbox = $currentLabel.find('input');
+        // Loop through each checkbox label
+        $('.activities label').each((i) => {
+          const $currentLabel = $('.activities label').eq(i);
+          const $currentCheckbox = $currentLabel.find('input');
 
-        // Test conditions
-        const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
+          // Test conditions
+          const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
 
-        // If there is another activity at the same day and time...
-        if (i !== $clkdLblIndx && _concurrentActivities) {
+          // If there is another activity at the same day and time...
+          if (i !== $clkdLblIndx && _concurrentActivities) {
 
-          // Disable conflicting activity
-          $currentCheckbox.attr('disabled', 'true');
-        }
+            // Disable conflicting activity
+            $currentCheckbox.attr('disabled', 'true');
+          }
 
-      }); // end of $.each loop
+        }); // end of $.each loop
 
-      // Add price of clicked activity to total
-      activitiesTotal += $price;
+        // Add price of clicked activity to total
+        activitiesTotal += $price;
 
-    } // end of if being checked
+      } // end of if being checked
 
-    // If checkbox is being unchecked...
-    if ($clkdChkbx.prop('checked') === false) {
+      // If checkbox is being unchecked...
+      if ($clkdChkbx.prop('checked') === false) {
 
-      // Loop through each checkbox label
-      $('.activities label').each((i) => {
-        const $currentLabel = $('.activities label').eq(i);
-        const $currentCheckbox = $currentLabel.find('input');
+        // Loop through each checkbox label
+        $('.activities label').each((i) => {
+          const $currentLabel = $('.activities label').eq(i);
+          const $currentCheckbox = $currentLabel.find('input');
 
-        // Test conditions
-        const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
+          // Test conditions
+          const _concurrentActivities = clkdLabelTxt.substring((clkdLabelTxt.length - 22), clkdLabelTxt.length) === $currentLabel.text().substring(($currentLabel.text().length - 22), $currentLabel.text().length);
 
-        // If there is another activity at the same day and time...
-        if (i !== $clkdLblIndx && _concurrentActivities) {
+          // If there is another activity at the same day and time...
+          if (i !== $clkdLblIndx && _concurrentActivities) {
 
-          // Reenable conflicting activity
-          $currentCheckbox.removeAttr('disabled');
-        }
+            // Reenable conflicting activity
+            $currentCheckbox.removeAttr('disabled');
+          }
 
-      }); // end of $.each loop
+        }); // end of $.each loop
 
-      // Subtract price of clicked activity from total
-      activitiesTotal -= $price;
+        // Subtract price of clicked activity from total
+        activitiesTotal -= $price;
 
-    } // end of if being unchecked
+      } // end of if being unchecked
 
-    // Display total below activities
-    $displayTotal.text(`Total = $${activitiesTotal}`);
+      // Display total below activities
+      $displayTotal.text(`Total = $${activitiesTotal}`);
 
-}); // end of click handler
-
+  }); // end of click handler
+}; // end of manageActivities()
 
 
 // --------------------------------------------
@@ -232,7 +245,7 @@ const selectCCOption = () => {
 };
 
 
-// Function to show appropriate inputs or info when a given option is selected and hide others.
+// Function to show appropriate inputs or info when a given option is selected and hide others
 const showPaymentInfo = () => {
 
   // When user selects a payment method...
@@ -277,29 +290,68 @@ const $ccZip = $('#zip');
 const $ccCVV = $('#cvv');
 
 // Function to create an alert message
+const createAlert = (inputField, errorMessage) => {
+  const $toolTip = $('<span></span>').addClass('tooltip');
+  // Insert alert text
+  $toolTip.text(errorMessage);
+  // Make container position relative
+  inputField.parent().css('position', 'relative');
+  // Insert tooltip after input field
+  inputField.after($toolTip);
+};
+
+// Function to validate user input on function call
+const validate = (inputField, comparison, emptyAlert, invalidAlert) => {
+  // Remove any other alert messages
+  inputField.next('.tooltip').remove();
+
+  // If input field is empty...
+  if (inputField.val().length === 0) {
+    // Show alert for empty field
+    createAlert(inputField, emptyAlert);
+  }
+  // If user input is invalid against RegEx...
+  else if (!comparison(inputField.val())){
+    // Show alert for invalid entry
+    createAlert(inputField, invalidAlert);
+  }
+  // If user input is valid...
+  else if (comparison(inputField.val())){
+    // Remove any corresponding alert messages
+    inputField.next('.tooltip').remove();
+  }
+}; // end of validate()
+
+// Function to validate user input in real time
+const validateOnInput = (inputField, comparison, emptyAlert, invalidAlert) => {
+
+  inputField.on('input', () => {
+    validate(inputField, comparison, emptyAlert, invalidAlert);
+  });
+}; // end of validateOnInput()
 
 
 /* --- Validate Name --- */
+const noNameMessage = `Please enter a name.`;
+const invalidNameMessage = `Name must contain only letters and spaces. Example: John Smith.`;
+
 const isValidName = (name) => {
-  return /[\w]+/.test(name);
+  return /^[a-z]{1}[\s[a-z]*$/i.test(name);
 };
 
-// Invalid name alert message
-const nameAlert = () => {console.log("Name invalid.")};
 
 /* --- Validate Email --- */
+const noEmailMessage = `This field cannot be left blank. Please provide an email.`;
+const invalidEmailMessage = `Must be a valid email. Example: person.mcperson@example.com.`;
+
 const isValidEmail = (email) => {
   return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
 }
 
-// Invalid email alert message
-const emailAlert = () => {console.log("Email invalid.")};
-
 /* --- Validate Activities --- */
+const noActivitiesMessage = `You must register for at least 1 activity before submitting.`;
 
-// Invalid activities alert message
-const activitiesAlert = () => {console.log("No checked activities.")};
-
+// Function to verify that activities have been checked
 const validateActivities = () => {
 
   let checkedActsQty = 0;
@@ -315,31 +367,49 @@ const validateActivities = () => {
   // If no activities are selected...
   if (checkedActsQty === 0) {
     // Show relevant alert message
-    activitiesAlert();
+    createAlert($('.activities > :last-child'), noActivitiesMessage);
   }
 }; // end of validateActivities()
 
 /* --- Validate Payment Method --- */
 
-// Invalid ccNum alert message
-const ccNumAlert = () => {console.log("ccNum invalid.")};
+const noCCNumMessage = `Please provide a credit card number or select another payment method.`;
+const invalidCCNum = `Credit card number must be between 13 and 16 digits.`;
 
+const noZipMessage = `Please provide a 5-digit zip code if using this payment method.`;
+const invalidZip = `Zip code must be 5 digits.`;
+
+const noCVVMessage = `Please provide the 3-digit CVV if using this payment method.`;
+const invalidCVV = `CVV must be 3 digits.`;
+
+// Credit card number validator
 const isValidCCNum = (ccNum) => {
-  return /\d{13,16}/.test(parseInt(ccNum));
+  if (isNaN(ccNum)){
+    return false;
+  }
+  else {
+    return /^\d{13,16}$/.test(parseInt(ccNum));
+  }
 };
 
-// Invalid zip alert message
-const zipAlert = () => {console.log("Zip invalid.")};
-
+// Zip validator
 const isValidZip = (zip) => {
-  return /\d{5}/.test(parseInt(zip));
+  if (isNaN(zip)){
+    return false;
+  }
+  else {
+    return /^\d{5}$/.test(parseInt(zip));
+  }
 };
 
-// Invalid cvv alert message
-const cvvAlert = () => {console.log("CVV invalid.")};
-
+// CVV Validator
 const isValidCVV = (cvv) => {
-  return /\d{3}/.test(parseInt(cvv));
+  if (isNaN(cvv)){
+    return false;
+  }
+  else {
+    return /^\d{3}$/.test(parseInt(cvv));
+  }
 };
 
 
@@ -348,20 +418,36 @@ const validateForm = () => {
   $('form').on('submit', (e) => {
     e.preventDefault();
 
-    // validateName()
-
-    // validateEmail()
-
     validateActivities();
 
-    // validateCCNum()
+    // If credit-card payment method is selected...
+    if ($('[value="credit card"]').prop('selected')) {
 
-    // validateZip()
+      // Validate credit card number
+      validate(
+        $ccNum,
+        isValidCCNum,
+        noCCNumMessage,
+        invalidCCNum
+      );
 
-    // validateCVV()
+      // Validate Zip
+      validate(
+        $ccZip,
+        isValidZip,
+        noZipMessage,
+        invalidZip
+      );
 
+      // Validate CVV
+      validate(
+        $ccCVV,
+        isValidCVV,
+        noCVVMessage,
+        invalidCVV
+      );
 
-
+    } // end of if CC method selected
 
   }); // end of submit handler
 }; // end of validateForm()
