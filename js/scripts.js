@@ -225,6 +225,13 @@ const manageActivities = () => {
         // Add price of clicked activity to total
         activitiesTotal += $price;
 
+        // If activities legend is not its normal text color...
+        if ($('.activities legend').css('color') != '#184f68' && $('.activities legend').css('color') != 'rgb(24, 79, 104)') {
+
+          // Restore text color/remove highlight
+          $('.activities legend').css('color', '#184f68');
+        }
+
       } // end of if being checked
 
       // If checkbox is being unchecked...
@@ -346,16 +353,22 @@ const validate = (inputField, comparison, emptyAlert, invalidAlert) => {
 
   // If input field is empty...
   if (inputField.val().length === 0) {
+    // Highlight input field
+    inputField.css('border-color', '#B8336A');
     // Show alert for empty field
     createAlert(inputField, emptyAlert);
   }
   // If user input is invalid against RegEx...
   else if (!comparison(inputField.val())){
+    // Highlight input field
+    inputField.css('border-color', '#B8336A');
     // Show alert for invalid entry
     createAlert(inputField, invalidAlert);
   }
   // If user input is valid...
   else if (comparison(inputField.val())){
+    // Remove highlight
+    inputField.css('border-color', '#c1deeb');
     // Remove any corresponding alert messages
     inputField.next('.tooltip-parent').remove();
   }
@@ -396,7 +409,7 @@ const validateActivities = () => {
   let checkedActsQty = 0;
   // Loop through activity checkbox
   $actvtyChkbxs.each((i) => {
-    // If this checbox is checked...
+    // If this checkbox is checked...
     if ($actvtyChkbxs.eq(i).prop('checked')) {
 
       checkedActsQty++;
@@ -405,10 +418,14 @@ const validateActivities = () => {
 
   // If no activities are selected...
   if (checkedActsQty === 0) {
+    // Highlight Activities legend
+    $('.activities legend').css('color', '#B8336A');
     // Show relevant alert message
     createAlert($('.activities > :last-child'), noActivitiesMessage);
   }
   else {
+    // Remove highlight from Activities legend
+    $('.activities legend').css('color', '#184f68');
     // Remove any corresponding alert messages
     $('.activities').find('.tooltip-parent').remove();
   }
@@ -516,15 +533,17 @@ const validateForm = () => {
 
     }
     else {
+
+      // Remove highlight
+      $('#credit-card input').css('border-color', '#c1deeb');
+      // Remove any corresponding alert messages
       $('#credit-card').find('.tooltip-parent').remove();
+
     } // end of if/else CC method selected
 
     // If there are any error messages...
     if ($('.tooltip').length !== 0){
       e.preventDefault();
-      // Submit form
-      // $('form').submit();
-      // console.log('Ready to submit.');
     }
 
   }); // end of submit handler
