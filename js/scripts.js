@@ -7,14 +7,17 @@ $( document ).ready( function () {
   // Set initial focus to first textfield
   focusOnFirstInput();
 
-  // Set initial payment method to credit card
-  selectCCOption();
-  disableCCPromptOption();
+  // Initially uncheck all activities
+  resetActivities();
 
   // Initially hide other-title and color select menu
   hideOtherTitle();
   hideColorSelect();
   // resetColorOptions();
+
+  // Set initial payment method to credit card
+  selectCCOption();
+  disableCCPromptOption();
 
   // Create arrays of options
   createJSOptionsArrays();
@@ -183,6 +186,12 @@ const $actvtyChkbxs = $('.activities input');
 $('.activities').append($totalDiv);
 
 const $displayTotal = $('#displayTotal');
+
+// Function to reset activity checkboxes
+  // Note: I have to create this because Firefox likes to "help" the user by saving the checked boxes even after refreshing the page. This was messing with the activitiesTotal.
+const resetActivities = () => {
+  $actvtyChkbxs.prop('checked', false);
+};
 
 // Function to manage the results of selecting activities
 const manageActivities = () => {
