@@ -216,6 +216,8 @@ const manageActivities = () => {
 
             // Disable conflicting activity
             $currentCheckbox.attr('disabled', 'true');
+            // Gray out current label
+            $currentLabel.css('opacity', '0.4');
           }
 
         }); // end of $.each loop
@@ -241,6 +243,8 @@ const manageActivities = () => {
 
             // Reenable conflicting activity
             $currentCheckbox.removeAttr('disabled');
+            // Restore current label opacity
+            $currentLabel.css('opacity', '1');
           }
 
         }); // end of $.each loop
