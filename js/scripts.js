@@ -11,9 +11,9 @@ $( document ).ready( function () {
   selectCCOption();
   disableCCPromptOption();
 
-  // Initially hide other-title and color select
+  // Initially hide other-title and color options
   hideOtherTitle();
-  hideColorSelect();
+  resetColorOptions();
 
   // Create arrays of options
   createJSOptionsArrays();
@@ -78,13 +78,30 @@ const showOrHideOtherTitle = () => {
 // --------------------------------------------
 // Global Variables
 const $colorOptions = $('#color').find('option');
+const $colorPrompt = $colorOptions.eq(0);
 const jsPunsOptions = [];
 const heartJSOptions = [];
 
-// Function to hide #color select area
-const hideColorSelect = () => {
-  $('#colors-js-puns').hide();
+// Function to reset color options
+  // Note: Had to empty <select> instead of just hiding because Safari limits style (e.g. display property) changes on form elements. So hidden <options> tags kept showing up in Safari.
+const resetColorOptions = () => {
+  // Remove all options from <select>
+  $('select#color').empty();
+
+  // Insert choose-theme prompt option <select>
+  $('select#color').append($colorPrompt);
+
+  // Select prompt option
+  $('#color').find('option').eq(0).prop('selected', 'selected');
 };
+
+// Function to hide all color options
+  // Colors will be shown via showShirtColorOptions() when user selects a theme
+// const hideColors = () => {
+//   $colorOptions.hide();
+//   $colorOptions.eq(0).prop('selected', 'selected').show();
+// };
+// Note: Could not use this due to Safari bug mentioned in resetColorOptions() comment.
 
 // Function to create array of specific options
 const createJSOptionsArrays = () => {
@@ -113,8 +130,6 @@ const showShirtColorOptions = () => {
 
     // If "JS Puns" <option> was selected...
     if (e.target.value === 'js puns') {
-      // Show color selection
-      $('#colors-js-puns').show();
 
       // Remove all options from <select>
       $('select#color').empty();
@@ -122,12 +137,13 @@ const showShirtColorOptions = () => {
       // Add jsPuns options to <select>
       $('select#color').append(jsPunsOptions);
 
+      // Select first option
+      $('#color').find('option').eq(0).prop('selected', 'selected');
+
     } // end of if 'js puns'
 
     // If "Heart JS" <option> was selected...
     else if (e.target.value === 'heart js') {
-      // Show color selection
-      $('#colors-js-puns').show();
 
       // Remove all options from <select>
       $('select#color').empty();
@@ -135,11 +151,15 @@ const showShirtColorOptions = () => {
       // Add heartJS options to <select>
       $('select#color').append(heartJSOptions);
 
+      // Select first option
+      $('#color').find('option').eq(0).prop('selected', 'selected');
+
     } // end of else if 'heart js'
 
     else {
-      hideColorSelect();
-      $('select#color').empty();
+
+      resetColorOptions();
+
     } // end of else statement
 
   }); // End of change handler
@@ -251,8 +271,7 @@ const showPaymentInfo = () => {
   // When user selects a payment method...
   $('#payment').on('change', (e) => {
 
-    // Get option that was just selected
-    // let selectedOption;
+    // Initialize varible for index of option that was just selected
     let selectPymntIndex;
     // Loop through options
     $paymentOptions.each((i) => {
