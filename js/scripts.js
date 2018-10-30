@@ -11,9 +11,10 @@ $( document ).ready( function () {
   selectCCOption();
   disableCCPromptOption();
 
-  // Initially hide other-title and color options
+  // Initially hide other-title and color select menu
   hideOtherTitle();
-  resetColorOptions();
+  hideColorSelect();
+  // resetColorOptions();
 
   // Create arrays of options
   createJSOptionsArrays();
@@ -82,8 +83,14 @@ const $colorPrompt = $colorOptions.eq(0);
 const jsPunsOptions = [];
 const heartJSOptions = [];
 
+// Function to hide #color select area
+const hideColorSelect = () => {
+  $('#colors-js-puns').hide();
+};
+
 // Function to reset color options
-  // Note: Had to empty <select> instead of just hiding because Safari limits style (e.g. display property) changes on form elements. So hidden <options> tags kept showing up in Safari.
+  // Note 1: Had to empty <select> instead of just hiding because Safari limits style (e.g. display property) changes on form elements. So hidden <options> tags kept showing up in Safari.
+  // Note 2: I switched to using hideColorSelect() in accordance with the Exceeds Expectations requirements for this Treehouse project.
 const resetColorOptions = () => {
   // Remove all options from <select>
   $('select#color').empty();
@@ -94,14 +101,6 @@ const resetColorOptions = () => {
   // Select prompt option
   $('#color').find('option').eq(0).prop('selected', 'selected');
 };
-
-// Function to hide all color options
-  // Colors will be shown via showShirtColorOptions() when user selects a theme
-// const hideColors = () => {
-//   $colorOptions.hide();
-//   $colorOptions.eq(0).prop('selected', 'selected').show();
-// };
-// Note: Could not use this due to Safari bug mentioned in resetColorOptions() comment.
 
 // Function to create array of specific options
 const createJSOptionsArrays = () => {
@@ -120,9 +119,6 @@ const createJSOptionsArrays = () => {
   }); // end of $.each loop
 }; // end of createJSOptionsArrays()
 
-// Function to show or hide #color <select>
-
-
 // Function to show appropriate set of colors when user chooses shirt design
 const showShirtColorOptions = () => {
   // When user selects a theme option...
@@ -130,6 +126,9 @@ const showShirtColorOptions = () => {
 
     // If "JS Puns" <option> was selected...
     if (e.target.value === 'js puns') {
+
+      // Show color selection
+      $('#colors-js-puns').show();
 
       // Remove all options from <select>
       $('select#color').empty();
@@ -145,6 +144,9 @@ const showShirtColorOptions = () => {
     // If "Heart JS" <option> was selected...
     else if (e.target.value === 'heart js') {
 
+      // Show color selection
+      $('#colors-js-puns').show();
+
       // Remove all options from <select>
       $('select#color').empty();
 
@@ -158,7 +160,10 @@ const showShirtColorOptions = () => {
 
     else {
 
-      resetColorOptions();
+      // resetColorOptions();
+
+      hideColorSelect();
+      $('select#color').empty();
 
     } // end of else statement
 
