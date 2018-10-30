@@ -10,4 +10,4 @@ Live page: https://stephenlanim.github.io/fsjs-techdegree-project-3/
 Submission Notes:
 I would like this project to be considered for an Exceeds Expectations grade.
 - The Name and Email fields use real-time validation in addition to being validated on form submission.
-- Each input (except activities) shows conditional error messages.
+- Each input (except activities) shows multiple conditional error messages.
