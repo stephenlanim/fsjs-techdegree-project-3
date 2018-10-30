@@ -26,6 +26,7 @@ $( document ).ready( function () {
   showOrHideOtherTitle();
   showShirtColorOptions();
   manageActivities();
+  cleanupActivities();
   showPaymentInfo();
   validateOnInput(
     $userName,
@@ -324,19 +325,23 @@ const $ccCVV = $('#cvv');
 
 // Function to create an alert message
 const createAlert = (inputField, errorMessage) => {
+  const $toolTipParent = $('<div></div>').addClass('tooltip-parent');
   const $toolTip = $('<span></span>').addClass('tooltip');
   // Insert alert text
   $toolTip.text(errorMessage);
+  // Append toolTip to parent span
+  $toolTipParent.append($toolTip);
   // Make container position relative
-  inputField.parent().css('position', 'relative');
-  // Insert tooltip after input field
-  inputField.after($toolTip);
+  // inputField.parent().css('position', 'relative');
+  $toolTipParent.css('position', 'relative');
+  // Insert tooltip parent after input field
+  inputField.after($toolTipParent);
 };
 
 // Function to validate user input on function call
 const validate = (inputField, comparison, emptyAlert, invalidAlert) => {
   // Remove any other alert messages
-  inputField.next('.tooltip').remove();
+  inputField.next('.tooltip-parent').remove();
 
   // If input field is empty...
   if (inputField.val().length === 0) {
@@ -351,7 +356,7 @@ const validate = (inputField, comparison, emptyAlert, invalidAlert) => {
   // If user input is valid...
   else if (comparison(inputField.val())){
     // Remove any corresponding alert messages
-    inputField.next('.tooltip').remove();
+    inputField.next('.tooltip-parent').remove();
   }
 }; // end of validate()
 
@@ -402,7 +407,20 @@ const validateActivities = () => {
     // Show relevant alert message
     createAlert($('.activities > :last-child'), noActivitiesMessage);
   }
+  else {
+    // Remove any corresponding alert messages
+    $('.activities').find('.tooltip-parent').remove();
+  }
 }; // end of validateActivities()
+
+// Function to remove Activities error message once criterion is fulfilled
+const cleanupActivities = () => {
+  $actvtyChkbxs.on('change', () => {
+    if ($('.activities').find('.tooltip-parent')) {
+      $('.activities').find('.tooltip-parent').remove();
+    }
+  });
+};
 
 /* --- Validate Payment Method --- */
 
@@ -449,7 +467,22 @@ const isValidCVV = (cvv) => {
 // Function to check validity of information upon form submission
 const validateForm = () => {
   $('form').on('submit', (e) => {
-    e.preventDefault();
+
+
+
+    validate(
+      $userName,
+      isValidName,
+      noNameMessage,
+      invalidNameMessage
+    );
+
+    validate(
+      $userEmail,
+      isValidEmail,
+      noEmailMessage,
+      invalidEmailMessage
+    );
 
     validateActivities();
 
@@ -480,7 +513,18 @@ const validateForm = () => {
         invalidCVV
       );
 
-    } // end of if CC method selected
+    }
+    else {
+      $('#credit-card').find('.tooltip-parent').remove();
+    } // end of if/else CC method selected
+
+    // If there are any error messages...
+    if ($('.tooltip').length !== 0){
+      e.preventDefault();
+      // Submit form
+      // $('form').submit();
+      // console.log('Ready to submit.');
+    }
 
   }); // end of submit handler
 }; // end of validateForm()
