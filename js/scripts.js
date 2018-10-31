@@ -340,7 +340,6 @@ const createAlert = (inputField, errorMessage) => {
   // Append toolTip to parent span
   $toolTipParent.append($toolTip);
   // Make container position relative
-  // inputField.parent().css('position', 'relative');
   $toolTipParent.css('position', 'relative');
   // Insert tooltip parent after input field
   inputField.after($toolTipParent);
